@@ -6,36 +6,40 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class Hook implements IXposedHookLoadPackage {
+
     @Override
-    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-        String pkgName = loadPackageParam.packageName;
-        switch (pkgName) {
-            case "com.hktv.android.hktvmall":
-                Class a = loadPackageParam.classLoader.loadClass("com.hktv.android.hktvmall.ui.activities.MainActivity");
-                XposedBridge.hookAllMethods(a, "resumeSplashAd", new XC_MethodReplacement() {
-                    @Override
-                    protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                        return "";
-                    }
-                });
-                XposedBridge.hookAllMethods(a, "saveLastSeenCategorySplash", new XC_MethodReplacement() {
-                    @Override
-                    protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                        return "";
-                    }
-                });
-                break;
-            case "com.asw.moneyback":
-                Class b = loadPackageParam.classLoader.loadClass("com.parknshop.moneyback.view.FullScreenADAlert");
-                XposedBridge.hookAllMethods(b, "popup", new XC_MethodReplacement() {
-                    @Override
-                    protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                        return "";
-                    }
-                });
-                break;
-            default:
-                return;
+    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
+        // Hook for com.hktv.android.hktvmall
+        if (lpparam.packageName.equals("com.hktv.android.hktvmall")) {
+            try {
+                Class<?> MainActivity = lpparam.classLoader.loadClass(
+                        "com.hktv.android.hktvmall.ui.activities.MainActivity"
+                );
+
+                // Hook resumeSplashAd
+                XposedBridge.hookAllMethods(MainActivity, "resumeSplashAd", XC_MethodReplacement.DO_NOTHING);
+
+
+                // Hook saveLastSeenCategorySplash
+                XposedBridge.hookAllMethods(MainActivity, "saveLastSeenCategorySplash", XC_MethodReplacement.DO_NOTHING);
+
+            } catch (Exception e) {
+                XposedBridge.log("HKTV Mall hook error: " + e);
+            }
+        }
+        // Hook for com.asw.moneyback
+        else if (lpparam.packageName.equals("com.asw.moneyback")) {
+            try {
+                Class<?> FullScreenADAlert = lpparam.classLoader.loadClass(
+                        "com.parknshop.moneyback.view.FullScreenADAlert"
+                );
+
+                // Hook popup method
+                XposedBridge.hookAllMethods(FullScreenADAlert, "popup", XC_MethodReplacement.DO_NOTHING);
+
+            } catch (Exception e) {
+                XposedBridge.log("Moneyback hook error: " + e);
+            }
         }
     }
 }
