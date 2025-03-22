@@ -4,5 +4,6 @@
         <!--这里是填入需要自动勾选的应用的包名，多个就是多个item-->
         <item>com.hktv.android.hktvmall</item>
         <item>com.asw.moneyback</item>
+        <item>com.mem.MacaoLife</item>
     </string-array>
 </resources>
